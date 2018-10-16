@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Read Products</title>
+
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="ajax.js"></script>
+    <script src="json"></script>
+
+
+</head>
+<body>
+
+
+<input type="button" id="load" value="Load">
+<div id="output">Podaci</div>
+<script>
+
+    window.onload = init;
+
+    //funkcija na klik poziva load funkciju
+    function init()
+    {
+        document.getElementById('load').addEventListener('click',load,false);
+    }
+
+
+
+ // PRAVI URL I UBACUJE U getJSON f-ju, a callback je anonimna f-ja koja poziva showResults f-ju
+    function load()
+    {
+        //url je sa vikipedije i prenesen u myjson
+    var url = 'https://api.myjson.com/bins/jvqtb';
+    getJSON(url,function (data) {
+       showResults(data);
+    })
+    }
+
+
+    // PRIKAZUJE ZELJENE PODATKE u html na zeljeno mesto. U result je ceo json.
+    function showResults(result)
+    {
+    var html = '<p>First Name:'+result.firstName+'</p><p>Last Name:'+result.lastName+'</p>' +
+        '<p>City:'+result.address.city+'</p>';
+    console.log(result);
+    document.getElementById('output').innerHTML = html;
+    }
+
+
+
+    //UZIMA JSON PODATKE iz gore navedenog url-a
+    function getJSON(url,callback)
+    {
+    var xhr = new XMLHttpRequest();
+        xhr.open('get',url,true);
+        xhr.responseType = 'json';
+        xhr.onload = function(){
+            if(xhr.status == 200)
+            {
+                callback(xhr.response);
+            }
+        }
+        xhr.send();
+    }
+
+
+
+</script>
+</body>
+</html>

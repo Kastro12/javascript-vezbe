@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Read Products</title>
+
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="ajax.js"></script>
+    <script src="json"></script>
+
+    <style>
+        .toggle{
+            padding: 10px;
+            background-color: #9acfea;
+            font-size: large;
+            margin: 10px;
+        }
+        .active {
+          background-color: #2b669a;
+            color: white;
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+<div>Party invite checklist</div>
+<div id="output">JavaScript</div>
+Guest Name: <input type="text" id="guestName"><br>
+Number: <input type="number" id="guestNum" value="0"><br>
+<input type="button" value="add">
+<script>
+var output = document.getElementById('output');
+var party = [];
+var el;
+var addGuest = document.querySelector('input[type="button"]');
+
+window.onload = buildList;
+
+//  NA KLIK DUGMETA UNOSI SE NOVA REZERVACIJA
+addGuest.addEventListener('click',function (e) {
+    var g = document.getElementById('guestName');
+    var n = document.getElementById('guestNum');
+console.log(party.length);
+    message('Nepotvrdjeno, ',g.value + ', +' + n.value, party.length,'');
+
+    party.push({
+        name:g.value,
+        gosti:Number(n.value),
+        status:false
+    });
+
+    // SMESTANJE NOVIH REZERVACIJA U LOKALNO SKLADISTE
+    localStorage.setItem('party', JSON.stringify(party));
+
+    g.value = "";
+    n.value = "";
+
+});
+    //AZURIRANJE POSTOJECIH REZERVACIJA TJ. MENJANJE STATUSA
+ output.addEventListener('click',function (e) {
+    el= e.target;
+    var ds = el.dataset;
+    el.classList.toggle('active');
+    el.children[0].innerHTML = el.children[0].innerHTML =='Potvrdjeno'?'Nepotvrdjeno':'Potvrdjeno';
+
+    party[ds.id].status = party[ds.id].status ? false:true;
+
+    localStorage.setItem('party',JSON.stringify(party));
+ });
+
+    // KREIRANJE LISTA SVIH REZERVACIJA
+    function buildList(){
+            if(localStorage.getItem('party'))
+            {
+            party = JSON.parse(localStorage.getItem('party'));
+            }else {
+            party = JSON.parse(data);
+            }
+
+        for(var x = 0;x<party.length;x++) {
+            var person = party[x].name + ', +' + party[x].gosti;
+            if(party[x].status){
+                message('Potvrdjeno',person, x,'active');
+            }else
+            {
+                message('Nepotvrdjeno',person,x,'');
+            }
+
+        }
+    }
+
+    function message(m,person,id,c) {
+        output.innerHTML += '<div class="toggle ' + c + '" data-id="'+id+'" data-person="'+person+'">' +
+            '<span>'+m+'</span>'+person+'</div>';
+    }
+
+
+</script>
+</body>
+</html>
